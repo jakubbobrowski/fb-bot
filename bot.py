@@ -1,7 +1,22 @@
+import os
+
+# ==============================
+# Recreate Facebook login session in GitHub
+# ==============================
+if not os.path.exists("state.json"):
+    fb_state = os.getenv("FB_STATE")
+
+    if fb_state:
+        with open("state.json", "w", encoding="utf-8") as f:
+            f.write(fb_state)
+        print("✅ state.json recreated from GitHub secret")
+    else:
+        print("💻 Running locally — using existing state.json")
+
+
 from datetime import datetime
 import time, random
 from playwright.sync_api import sync_playwright
-import os
 
 
 # random start delay to avoid exact-time pattern (5–20 minutes)
@@ -9,21 +24,7 @@ delay_minutes = random.randint(5, 20)
 delay_seconds = delay_minutes * 60
 
 print(f"⏳ Waiting {delay_minutes} minutes before starting...")
-time.sleep(delay_seconds)
-
-
-# Recreate state.json when running in GitHub Actions
-if not os.path.exists("state.json"):
-    fb_state = os.getenv("FB_STATE")
-
-    if fb_state:
-        with open("state.json", "w", encoding="utf-8") as f:
-            f.write(fb_state)
-        print("state.json recreated from GitHub secret")
-
-    else:
-        print("Running locally — using existing state.json")
-
+#time.sleep(delay_seconds)
 
 
 POST_LINK_1 = "https://www.facebook.com/permalink.php?story_fbid=pfbid0zTKLvZUh4AyRJyXu3UPNNV9c8GQxJxRaWFsdNAhZFf98z3XAiPv3HRWxJ5WhNx3Nl&id=100012472296110"
