@@ -9,6 +9,21 @@ delay_seconds = delay_minutes * 60
 print(f"⏳ Waiting {delay_minutes} minutes before starting...")
 time.sleep(delay_seconds)
 
+import os
+
+# Recreate state.json when running in GitHub Actions
+if not os.path.exists("state.json"):
+    fb_state = os.getenv("FB_STATE")
+
+    if fb_state:
+        with open("state.json", "w", encoding="utf-8") as f:
+            f.write(fb_state)
+        print("state.json recreated from GitHub secret")
+
+    else:
+        print("Running locally — using existing state.json")
+
+
 
 POST_LINK_1 = "https://www.facebook.com/permalink.php?story_fbid=pfbid0zTKLvZUh4AyRJyXu3UPNNV9c8GQxJxRaWFsdNAhZFf98z3XAiPv3HRWxJ5WhNx3Nl&id=100012472296110"
 POST_LINK_2 = "https://www.facebook.com/permalink.php?story_fbid=pfbid0qRDBtCGeNtkn4YbCP79Vp7yXTT6rqxBR7SJtRCt3iJycwAAaBSszaj9C87XkvLVml&id=100012472296110"
