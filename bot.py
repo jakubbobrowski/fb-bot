@@ -1,6 +1,8 @@
 from datetime import datetime
 import time, random
 from playwright.sync_api import sync_playwright
+import os
+
 
 # random start delay to avoid exact-time pattern (5–20 minutes)
 delay_minutes = random.randint(5, 20)
@@ -9,7 +11,6 @@ delay_seconds = delay_minutes * 60
 print(f"⏳ Waiting {delay_minutes} minutes before starting...")
 time.sleep(delay_seconds)
 
-import os
 
 # Recreate state.json when running in GitHub Actions
 if not os.path.exists("state.json"):
@@ -100,7 +101,24 @@ def post_to_group(page, group, description):
 # ---------- MAIN ----------
 with sync_playwright() as p:
 
-    browser = p.chromium.launch(headless=False, slow_mo=250)
+    #browser = p.chromium.launch(headless=False, slow_mo=250)
+    RUNNING_IN_GITHUB = os.getenv("GITHUB_ACTIONS") == "true"
+
+    # Launch browser differently depending on environment
+    if RUNNING_IN_GITHUB:
+        print("☁️ Running in GitHub Actions (headless)")
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-dev-shm-usage"]
+        )
+    else:
+        print("💻 Running locally (visible browser)")
+        browser = p.chromium.launch(
+            headless=False,
+            slow_mo=250
+        )
+
+
     context = browser.new_context(storage_state="state.json")
     page = context.new_page()
 
