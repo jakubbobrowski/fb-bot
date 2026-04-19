@@ -2,7 +2,7 @@ name: Run Facebook Bot
 
 on:
   schedule:
-    - cron: "0 15 * * *"   # runs every day at 07:00 UTC
+    - cron: "30 15 * * *"   # runs every day at 07:00 UTC
   workflow_dispatch:       # allows manual run button
 
 jobs:
